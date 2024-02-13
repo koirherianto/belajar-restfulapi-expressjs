@@ -44,14 +44,14 @@ const login = async (request) => {
     });
 
     if (!userDb) {
-        throw new ResponseError(401, 'Username or password wrong');
+        throw new ResponseError(401, 'Username or password wrongx');
     }
 
     // jika apakah passwordnya
     const isPasswordValid = await bcrypt.compare(loginRequest.password, userDb.password);
 
-    if (isPasswordValid) { //jika password tidak sesuai
-        throw new ResponseError(401, 'Username or password wrong');
+    if (!isPasswordValid) { //jika password tidak sesuai
+        throw new ResponseError(401, 'Username or password wrongy');
     }
 
     const token = uuid().toString();
