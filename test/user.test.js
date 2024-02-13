@@ -1,30 +1,26 @@
 import supertest from "supertest";
 import { web } from "../src/application/web";
-import { prismaClient } from "../src/application/database.js";
 import { logger } from "../src/application/logging.js";
+import { removeTestUser } from "./util.test.js";
 
 describe('POST /api/users', () => {
 
     afterEach(async () => {
-        await prismaClient.user.deleteMany({
-            where : {
-                username : 'koirherianto',
-            }
-        });
+        await removeTestUser();
     });
 
     it('should can register new user', async () => {
         const result = await supertest(web)
             .post('/api/users')
             .send({
-                username: 'koirherianto',
+                username: 'test',
                 password: '123456',
-                name: 'koir herianto'
+                name: 'test'
             })
 
         expect(result.status).toBe(200);
-        expect(result.body.data.username).toBe('koirherianto');
-        expect(result.body.data.name).toBe('koir herianto');
+        expect(result.body.data.username).toBe('test');
+        expect(result.body.data.name).toBe('test');
         expect(result.body.data.password).toBeUndefined();
     });
 
@@ -48,7 +44,7 @@ describe('POST /api/users', () => {
             .post('/api/users')
             .send({
                 username: 'test',
-                password: 'rahasia',
+                password: '123456',
                 name: 'test'
             });
 

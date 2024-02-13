@@ -2,7 +2,8 @@ import { ResponseError } from "../error/response-error.js";
 
 const validate = (shema, request) => {
     const result = shema.validate(request, {
-        abortEarly : false
+        abortEarly : false,
+        allowUnknown : false // jika ada field yang tidak diketahui gagal /reject
     });
 
     if (result.error) {
