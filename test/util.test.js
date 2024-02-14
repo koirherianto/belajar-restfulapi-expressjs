@@ -19,5 +19,5 @@ export const createTestUser = async () => {
         }
     });
 
-    console.log('------------------ buat user selesai');
+    console.log('--------- buat user selesai ---------');
 };

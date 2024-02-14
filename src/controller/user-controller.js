@@ -5,8 +5,8 @@ const register = async (req, res, next) => {
     try {
         const result = await userService.register(req.body);
         res.status(200).json({
-            success : true,
-            data : result
+            success: true,
+            data: result
         });
     } catch (e) {
         next(e);
@@ -19,11 +19,28 @@ const login = async (req, res, next) => {
         const result = await userService.login(req.body);
 
         res.status(200).json({
-            success : true,
-            token : result.token,
-            data : {
-                name : result.username,
-                username : result.username
+            success: true,
+            token: result.token,
+            data: {
+                name: result.username,
+                username: result.username
+            }
+        });
+    } catch (e) {
+        next(e);
+    }
+};
+
+const get = async (req, res, next) => {
+    try {
+        const username = req.user.username;
+        const result = await userService.get(username);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                username: result.username,
+                name: result.name
             }
         });
     } catch (e) {
@@ -33,5 +50,6 @@ const login = async (req, res, next) => {
 
 export default {
     register,
-    login
+    login,
+    get
 }
