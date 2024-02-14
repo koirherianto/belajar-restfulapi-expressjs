@@ -50,8 +50,13 @@ const get = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const result = await userService.update(req.body);
 
+        const requestBody = req.body;
+        const username = req.user.username;
+        requestBody.username = username;
+        
+        const result = await userService.update(requestBody);
+        
         res.status(200).json({
             status: 'success',
             data: result
