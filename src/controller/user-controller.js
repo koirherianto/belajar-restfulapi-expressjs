@@ -48,8 +48,22 @@ const get = async (req, res, next) => {
     }
 };
 
+const update = async (req, res, next) => {
+    try {
+        const result = await userService.update(req.body);
+
+        res.status(200).json({
+            status: 'success',
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+};
+
 export default {
     register,
     login,
-    get
+    get,
+    update
 }
