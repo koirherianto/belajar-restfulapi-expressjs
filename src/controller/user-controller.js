@@ -54,9 +54,9 @@ const update = async (req, res, next) => {
         const requestBody = req.body;
         const username = req.user.username;
         requestBody.username = username;
-        
+
         const result = await userService.update(requestBody);
-        
+
         res.status(200).json({
             status: 'success',
             data: result
@@ -66,9 +66,24 @@ const update = async (req, res, next) => {
     }
 };
 
+const logout = async (req, res, next) => {
+    try {
+        const username = req.user.username;
+        const result = await userService.logout(username);
+
+        res.status(200).json({
+            "success" : true,
+        });
+
+    } catch (e) {
+        next(e)
+    }
+};
+
 export default {
     register,
     login,
     get,
-    update
+    update,
+    logout
 }

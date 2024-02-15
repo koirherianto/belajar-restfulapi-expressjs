@@ -179,7 +179,7 @@ describe('PATCH /api/users/current', function () {
         expect(result.status).toBe(200);
         expect(result.body.data.username).toBe('test');
         expect(result.body.data.name).toBe('eko');
-        
+
         const user = await getTestUser();
 
         expect(await bcrypt.compare("rahasialagi", user.password)).toBe(true);
@@ -209,9 +209,8 @@ describe('PATCH /api/users/current', function () {
         expect(result.status).toBe(200);
         expect(result.body.data.username).toBe('test');
         expect(result.body.data.name).toBe('test');
-        
-        const user = await getTestUser();
 
+        const user = await getTestUser();
         expect(await bcrypt.compare("rahasialagi", user.password)).toBe(true);
     });
 
@@ -225,3 +224,34 @@ describe('PATCH /api/users/current', function () {
     });
 
 });
+
+describe('DELETE /api/users/logout', function () {
+    beforeEach(async () => {
+        await createTestUser();
+    });
+
+    afterEach(async () => {
+        await removeTestUser();
+    });
+
+    it('should be logout', async () => {
+        const result = await supertest(web)
+            .delete("/api/users/logout")
+            .set("Authorization", "test");
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+
+        const user = await getTestUser();
+        expect(user.token).toBe(null);
+    });
+
+    it('should be cant logout, Authorization false', async () => {
+        const result = await supertest(web)
+            .delete("/api/users/logout")
+            .set("Authorization", "salah");
+
+        expect(result.status).toBe(401);
+        expect(result.body.errors).toBe('Unauthorized');
+    });
+});    

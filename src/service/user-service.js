@@ -97,44 +97,73 @@ const get = async (username) => {
 const update = async (request) => {
     const updateRequest = validate(updateUserValidation, request);
 
-    
     const userCount = await prismaClient.user.count({
         where: {
             username: updateRequest.username
         }
     });
-    
+
     if (userCount !== 1) {
         throw new ResponseError(404, 'User Is Not Found');
     }
-    
+
     let dataUpdate = {};
-    
+
     if (updateRequest.name) {
         dataUpdate.name = updateRequest.name;
     }
-    
+
     if (updateRequest.password) {
         dataUpdate.password = await bcrypt.hash(updateRequest.password, 10);
     }
-    
+
     const userDb = await prismaClient.user.update({
         where: {
             username: updateRequest.username
         },
         data: dataUpdate,
-        select : {
-            name : true,
-            username : true,
+        select: {
+            name: true,
+            username: true,
         }
     });
-    
+
     return userDb;
+};
+
+const logout = async (username) => {
+    const usernameRequest = validate(getUserValidation, username);
+
+    const userCount = await prismaClient.user.count({
+        where: {
+            username: usernameRequest
+        }
+    });
+
+    if (userCount !== 1) {
+        throw new ResponseError(400, 'User Not Found');
+    }
+
+    const userDB = await prismaClient.user.update({
+        where: {
+            username: usernameRequest
+        },
+        data: {
+            token: null
+        },
+        select: {
+            username: true,
+            name: true
+        }
+    });
+
+    return userDB;
 };
 
 export default {
     register,
     login,
     get,
-    update
+    update,
+    logout
 };
