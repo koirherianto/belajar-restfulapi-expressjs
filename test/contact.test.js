@@ -85,3 +85,68 @@ describe('GET /api/contacts/:contactId', () => {
         expect(result.body.errors).toBeDefined();
     });
 });
+
+describe('PUT /api/contacts/:contactId', () => {
+    beforeEach(async () => {
+        await createTestUser();
+        await createTestContact();
+    });
+
+    afterEach(async () => {
+        await removeAllTestContact();
+        await removeTestUser();
+    });
+
+    it('should update existing contact', async () => {
+        const testContact = await getTestContact();
+        const result = await supertest(web)
+            .put("/api/contacts/" + testContact.id)
+            .set("Authorization", "test")
+            .send({
+                nama_depan: "testcoy",
+                nama_belakang: "testcoy",
+                email: "testcoy@pzn.com",
+                phone: "080900000009"
+            });
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.data.id).toBeDefined();
+        expect(result.body.data.nama_depan).toBe('testcoy');
+        expect(result.body.data.nama_belakang).toBe('testcoy');
+        expect(result.body.data.email).toBe('testcoy@pzn.com');
+        expect(result.body.data.phone).toBe('080900000009');
+    });
+
+    it('should reject if request invalid', async () => {
+        const testContact = await getTestContact();
+        const result = await supertest(web)
+            .put("/api/contacts/" + testContact.id)
+            .set("Authorization", "test")
+            .send({
+                nama_depan: "",
+                nama_belakang: "",
+                email: "testcoy",
+                phone: "080900034634633634636400009"
+            });
+
+        expect(result.status).toBe(400);
+        expect(result.body.errors).toBeDefined();
+    });
+
+    it('should reject if contact not found', async () => {
+        const testContact = await getTestContact();
+        const result = await supertest(web)
+            .put("/api/contacts/" + (testContact.id + 1))
+            .set("Authorization", "test")
+            .send({
+                nama_depan: "testcoy",
+                nama_belakang: "testcoy",
+                email: "testcoy@pzn.com",
+                phone: "080900000009"
+            });
+
+        expect(result.status).toBe(404);
+        expect(result.body.errors).toBeDefined();
+    });
+});

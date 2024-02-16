@@ -8,6 +8,7 @@ const validate = (shema, request) => {
 
     if (result.error) {
         // throw result.error; //cumment js
+        console.log(result.error);
         throw new ResponseError(400, result.error.message)
     }else {
         return result.value;
