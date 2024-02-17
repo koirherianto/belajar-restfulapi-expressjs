@@ -1,6 +1,8 @@
+import { error } from "winston";
 import { prismaClient } from "../application/database";
 import { ResponseError } from "../error/response-error";
 import { createContactValidation, getContactValidation, updateContactValidation } from "../validation/contact-validation.";
+import { getUserValidation } from "../validation/user-validation";
 import { validate } from "../validation/validate";
 
 const create = async (user, request) => {
@@ -57,7 +59,7 @@ const update = async (user, request) => {
             username: user.username
         },
     });
-    
+
     if (countContact !== 1) {
         throw new ResponseError(404, "contact is not found");
     }
@@ -85,8 +87,30 @@ const update = async (user, request) => {
     return contact;
 };
 
+const remove = async (user, contactId) => {
+    contactId = validate(getContactValidation, contactId);
+
+    countContact = await prismaClient.contact.count({
+        where : {
+            username : user.username,
+            id : contactId
+        }
+    });
+
+    if (countContact !== 1) {
+        throw new ResponseError(404, 'Contact Not Found');
+    }
+
+    await prismaClient.contact.delete({
+        where : {
+            id : contactId
+        }
+    });
+};
+
 export default {
     create,
     get,
-    update
+    update,
+    remove
 }
