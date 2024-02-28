@@ -1,4 +1,4 @@
-import { error } from "winston";
+import { add, error } from "winston";
 import { prismaClient } from "../application/database";
 import { ResponseError } from "../error/response-error";
 import { validate } from "../validation/validate";
@@ -109,8 +109,31 @@ const update = async (user, contactId, request) => {
     return address;
 };
 
+const remove = async (user, contactId, addressId) => {
+    contactId = await checkContactMustExist(user, contactId);
+    addressId = validate(getContactValidation, addressId);
+
+    const countContact = await prismaClient.address.count({
+        where : {
+            contact_id : contactId,
+            id : addressId
+        }
+    });
+
+    if (countContact !== 1) {
+        throw new ResponseError(404, 'Contact Not Found');
+    }
+
+    await prismaClient.address.delete({
+        where : {
+            id : addressId
+        }
+    });
+};
+
 export default {
     create,
     get,
-    update
+    update,
+    remove
 };
