@@ -114,7 +114,7 @@ describe('GET /api/contacts/:contactId/addresses/:addressId', () => {
 
         expect(result.status).toBe(404);
     });
-    
+
     it('should reject if address is notfound', async () => {
         const testContact = await getTestContact();
         const testAddress = await getTestAddress();
@@ -122,6 +122,102 @@ describe('GET /api/contacts/:contactId/addresses/:addressId', () => {
         const result = await supertest(web)
             .get("/api/contacts/" + testContact.id + "/addresses/" + (testAddress.id + 1))
             .set("Authorization", "test");
+
+        expect(result.status).toBe(404);
+    });
+});
+
+describe('PUT api/contact/:contactId/addresses/:addressId', () => {
+    beforeEach(async () => {
+        await createTestUser();
+        await createTestContact();
+        await createTestAddress();
+    });
+
+    afterEach(async () => {
+        await removeAllTestAddress();
+        await removeAllTestContact();
+        await removeTestUser();
+    });
+
+
+    it("Should Can Update Address", async () => {
+        const testContact = await getTestContact();
+        const testAddress = await getTestAddress();
+
+        const result = await supertest(web)
+            .put("/api/contacts/" + testContact.id + "/addresses/" + testAddress.id)
+            .set("Authorization", "test")
+            .send({
+                street: "test2",
+                city: "test2",
+                province: "test2",
+                county: "test2",
+                postal_code: "test2",
+            });
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+
+        expect(result.body.data.id).toBeDefined();
+        expect(result.body.data.street).toBe('test2');
+        expect(result.body.data.city).toBe('test2');
+        expect(result.body.data.province).toBe('test2');
+        expect(result.body.data.county).toBe('test2');
+        expect(result.body.data.postal_code).toBe('test2');
+    });
+
+    it("Should Reject if data invalid", async () => {
+        const testContact = await getTestContact();
+        const testAddress = await getTestAddress();
+
+        const result = await supertest(web)
+            .put("/api/contacts/" + testContact.id + "/addresses/" + testAddress.id)
+            .set("Authorization", "test")
+            .send({
+                street: "test2",
+                city: "test2",
+                province: "test2",
+                county: "",
+                postal_code: "",
+            });
+
+        expect(result.status).toBe(400);
+    });
+
+    it("Should Reject if contactId Invalid", async () => {
+        const testContact = await getTestContact();
+        const testAddress = await getTestAddress();
+
+        const result = await supertest(web)
+            .put("/api/contacts/" + (testContact.id + 1) + "/addresses/" + testAddress.id)
+            .set("Authorization", "test")
+            .send({
+                street: "test2",
+                city: "test2",
+                province: "test2",
+                county: "test2",
+                postal_code: "test2",
+            });
+
+        expect(result.status).toBe(404);
+    });
+
+
+    it("Should Reject if addressesId Invalid", async () => {
+        const testContact = await getTestContact();
+        const testAddress = await getTestAddress();
+
+        const result = await supertest(web)
+            .put("/api/contacts/" + testContact.id + "/addresses/" + ( 1 + testAddress.id))
+            .set("Authorization", "test")
+            .send({
+                street: "test2",
+                city: "test2",
+                province: "test2",
+                county: "test2",
+                postal_code: "test2",
+            });
 
         expect(result.status).toBe(404);
     });
