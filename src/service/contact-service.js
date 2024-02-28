@@ -93,7 +93,7 @@ const update = async (user, request) => {
 const remove = async (user, contactId) => {
     contactId = validate(getContactValidation, contactId);
 
-    countContact = await prismaClient.contact.count({
+    const countContact = await prismaClient.contact.count({
         where: {
             username: user.username,
             id: contactId,
