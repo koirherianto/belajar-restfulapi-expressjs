@@ -23,7 +23,7 @@ const get = async (req, res, next) => {
         const contactId = req.params.contactId;
         const addressId = req.params.addressId;
         const result = await addressService.get(user, contactId, addressId);
-        
+
         return res.status(200).json({
             success: true,
             data: result
@@ -68,9 +68,25 @@ const remove = async (req, res, next) => {
     }
 };
 
+const list = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const contactId = req.params.contactId;
+        const addreses = await addressService.list(user, contactId);
+
+        return res.status(200).json({
+            success: true,
+            data: addreses
+        });
+    } catch (e) {
+        next(e);
+    }
+};
+
 export default {
     create,
     get,
     update,
-    remove
+    remove,
+    list
 }
