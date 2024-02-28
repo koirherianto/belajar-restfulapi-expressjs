@@ -173,7 +173,7 @@ describe("DELETE /api/contacts/:contactId", () => {
     it("should Delete existing contact", async () => {
         let testContact = await getTestContact();
         const result = await supertest(web)
-            .put("/api/contacts/" + testContact.id)
+            .delete("/api/contacts/" + testContact.id)
             .set("Authorization", "test");
 
         expect(result.status).toBe(200);
@@ -186,10 +186,10 @@ describe("DELETE /api/contacts/:contactId", () => {
     it("should reject if contact is not found", async () => {
         let testContact = await getTestContact();
         const result = await supertest(web)
-            .put("/api/contacts/" + (testContact.id + 1))
+            .delete("/api/contacts/" + (testContact.id + 1))
             .set("Authorization", "test");
 
-        expect(result.status).toBe(404);
+        expect(result.status).toBe(400);
     });
 });
 

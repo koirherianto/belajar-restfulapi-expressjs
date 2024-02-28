@@ -1,14 +1,12 @@
-import { error } from "winston";
-import { prismaClient } from "../application/database";
-import { ResponseError } from "../error/response-error";
+import { prismaClient } from "../application/database.js";
+import { ResponseError } from "../error/response-error.js";
 import {
     createContactValidation,
     getContactValidation,
     searcheContactValidation,
     updateContactValidation,
-} from "../validation/contact-validation.";
-import { getUserValidation } from "../validation/user-validation";
-import { validate } from "../validation/validate";
+} from "../validation/contact-validation.js";
+import { validate } from "../validation/validate.js";
 
 const create = async (user, request) => {
     const contactRequest = validate(createContactValidation, request);

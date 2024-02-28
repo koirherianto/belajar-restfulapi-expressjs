@@ -1,9 +1,8 @@
-import { add, error } from "winston";
-import { prismaClient } from "../application/database";
-import { ResponseError } from "../error/response-error";
-import { validate } from "../validation/validate";
-import { createAddressValidation, getAddressValidation, updateAddressValidation } from "../validation/address-validation";
-import { getContactValidation } from "../validation/contact-validation.";
+import { prismaClient } from "../application/database.js";
+import { ResponseError } from "../error/response-error.js";
+import { validate } from "../validation/validate.js";
+import { createAddressValidation, getAddressValidation, updateAddressValidation } from "../validation/address-validation.js";
+import { getContactValidation } from "../validation/contact-validation.js";
 
 const checkContactMustExist = async (user, contactId) => {
     contactId = validate(getContactValidation, contactId);
@@ -76,8 +75,8 @@ const update = async (user, contactId, request) => {
 
     const addressCountDB = await prismaClient.address.count({
         where: {
-            contact_id : contactId,
-            id : addressRequest.id
+            contact_id: contactId,
+            id: addressRequest.id
         }
     });
 
@@ -114,9 +113,9 @@ const remove = async (user, contactId, addressId) => {
     addressId = validate(getContactValidation, addressId);
 
     const countContact = await prismaClient.address.count({
-        where : {
-            contact_id : contactId,
-            id : addressId
+        where: {
+            contact_id: contactId,
+            id: addressId
         }
     });
 
@@ -125,8 +124,8 @@ const remove = async (user, contactId, addressId) => {
     }
 
     await prismaClient.address.delete({
-        where : {
-            id : addressId
+        where: {
+            id: addressId
         }
     });
 };
@@ -135,10 +134,10 @@ const list = async (user, contactId) => {
     contactId = await checkContactMustExist(user, contactId);
 
     const contacts = await prismaClient.address.findMany({
-        where : {
-            contact_id : contactId
+        where: {
+            contact_id: contactId
         },
-        select : {
+        select: {
             id: true,
             street: true,
             city: true,
