@@ -9,7 +9,23 @@ const create = async (req, res, next) => {
         const result = await addressService.create(user, contactId, request);
 
         res.status(200).json({
-            success : true,
+            success: true,
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+};
+
+const get = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const contactId = req.params.contactId;
+        const addressId = req.params.addressId;
+        const result = await addressService.get(user, contactId, addressId);
+        
+        return res.status(200).json({
+            success: true,
             data: result
         });
     } catch (e) {
@@ -18,5 +34,6 @@ const create = async (req, res, next) => {
 };
 
 export default {
-    create
+    create,
+    get
 }
