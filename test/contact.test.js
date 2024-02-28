@@ -189,7 +189,7 @@ describe("DELETE /api/contacts/:contactId", () => {
             .delete("/api/contacts/" + (testContact.id + 1))
             .set("Authorization", "test");
 
-        expect(result.status).toBe(400);
+        expect(result.status).toBe(404);
     });
 });
 
